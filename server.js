@@ -10,6 +10,8 @@ _cloudinary_stream.permissions.read(function(user,event) {
 
 Meteor.methods({
 	cloudinary_upload:function(file,options){
+        check(file,Match.Any);
+        check(options,Match.Any);
 		this.unblock();
 
 		var moreData = {};
@@ -45,19 +47,48 @@ Meteor.methods({
 		}
 	},
 	cloudinary_upload_stream:function(file,options){
+        check(file,Match.Any);
+        check(options,Match.Any);
 		this.unblock();
 
+
 		var moreData = {};
-		
+
 		if (options.public_id)
 			moreData.public_id = options.public_id;
+
+        if(options.transformation){
+            moreData.transformation = options.transformation;
+        }
+
+        if(options.image_metadata){
+            moreData.image_metadata = options.image_metadata;
+        }
+
+        if(options.faces){
+            moreData.faces = options.faces;
+        }
+
+        if(options.eager_async){
+            moreData.eager_async = options.eager_async;
+            moreData.eager_notification_url = options.eager_notification_url;
+        }
+
+        if(options.allowed_formats){
+            moreData.allowed_formats = options.allowed_formats;
+        }
+
+        if(options.eager){
+            moreData.eager = options.eager;
+        }
 
 		var file_stream_buffer = new stream_buffers.ReadableStreamBuffer({
 			frequency:10,
 			chunkSize:2048
 		});
 
-		var buffer = new Buffer(file);
+        console.log(moreData);
+        var buffer = new Buffer(file);
 		file_stream_buffer.put(buffer);
 
 		var future = new Future();
@@ -94,7 +125,9 @@ Meteor.methods({
 		if(future.wait() && !future.wait().error){
 			var callback_options = {
 				context:options.context,
-				upload_data:future.wait()
+				upload_data:future.wait(),
+                type:options.type,
+                cropSettings:options.cropSettings
 			}
 
 			if(_.has(options,"callback")){

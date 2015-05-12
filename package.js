@@ -1,8 +1,8 @@
 Package.describe({
-	name:"lepozepo:cloudinary",
+	name:"agradip:cloudinary",
 	summary: "Upload files to Cloudinary",
 	version:"3.0.1",
-	git:"https://github.com/Lepozepo/cloudinary"
+	git:"https://github.com/agradip/cloudinary"
 });
 
 Npm.depends({
